@@ -47,10 +47,18 @@
 </nav>
 
 <section class="hero" id="top">
-  <div class="hero-body">
+  <div class="hero-body" style="padding-top: 0rem;"> <!-- 将 padding-top 调小，默认通常是 3rem -->">
     <div class="container is-max-desktop">
+      <!-- Added Logo and Conference Info -->
+      <div class="columns is-centered">
+        <div class="column is-8 has-text-centered">
+            <img src="./static/images/IEEEVR_2024_LogoBanner.png" alt="IEEE VR 2024 Logo" style="max-height: 170px; width: 100%; max-width: 800px; height: auto; margin: 0 auto 1rem; display: block;">
+          <p class="is-size-5 has-text-weight-bold">Published as a conference paper at IEEE VR 2024</p>
+        </div>
+      </div>
       <div class="columns is-centered">
         <div class="column has-text-centered">
+
             <h1 class="title is-1 publication-title">
             Voicing Your Emotion:<br>
             Integrating Emotion and Identity in Cross-Modal 3D Facial Animations
@@ -115,8 +123,8 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <figure class="image">
-          <img src="./static/images/vocing_demo.gif" alt="Voicing Your Emotion demo GIF">
+        <figure class="image" style="max-width: 720px; margin: 0 auto;"></figure>
+          <img src="./static/images/vocing_demo.gif" alt="Voicing Your Emotion demo GIF" style="width: 90%; height: auto;">
         </figure>
 
         <div class="content" style="margin-top: 1rem;">
@@ -139,12 +147,15 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            This project page summarizes the paper "Voicing Your Emotion". The method addresses a key gap in speech-driven 3D face animation:
-            models with accurate lip-sync often fail to preserve rich emotion and identity.
+            Recent advances in speech-driven 3D facial animation have yielded promising results, yet capturing intricate expressiveness, particularly in emotion and identity, remains an intricate challenge. While conventional studies often prioritize lip synchronization, they frequently overlook the full spectrum of emotional nuances and the uniqueness of individual identity. 
           </p>
           <p>
-            The framework takes speech, prompt words, and emotion conditions as input, then generates a controllable 3D talking face.
-            It combines Text2Avatar, emotion-identity feature fusion, and an autoregressive generator with motion priors.
+            Addressing this deficiency, we unveil a pioneering method tailored to produce 3D facial expressions that resonate deeply with emotion and identity, guided by speech and user-provided prompt words. 
+          <p>
+            Our key insight is an emotion-identity fusion mechanism, a pre-trained self-reconstruction codebook, meticulously crafted from a wide array of emotional facial movements, serving as an expressive motion benchmark. Using this foundation, prompt words are seamlessly transformed into facial representations that capture both emotion and identity, and are then adeptly projected onto 3D templates.
+          </p>
+          <p></p>
+            When synergized with speech audio and a user-specified emotion, our algorithm breathes life into a 3D avatar, reflecting the desired emotion and identity. The model's efficacy is bolstered by an advanced autoregression technique, marrying emotion and identity through an innovative feature fusion mechanism and a purpose-built loss function. Consequently, our approach emerges as a robust tool for crafting 3D talking avatars, rich in emotional depth and distinctive identity.
           </p>
         </div>
       </div>
@@ -180,9 +191,9 @@
             final 3D facial motion.
           </p>
         </div>
-        <!-- <figure class="image">
-          <img src="./static/images/paper/pages/page-3.png" alt="Method framework in paper (Fig.2)">
-        </figure> -->
+        <figure class="image" style="max-width: 720px; margin: 0 auto;">
+          <img src="./static/images/method.png" alt="Method framework" style="width: 100%; height: auto;">
+        </figure>
       </div>
     </div>
 
@@ -223,28 +234,50 @@
       </div>
     </div>
 
-    <!-- <div class="columns is-centered">
-      <div class="column is-half">
-        <figure class="image">
-          <img src="./static/images/paper/pages/page-5.png" alt="Quantitative and t-SNE results (Fig.4, tables)">
-        </figure>
-      </div>
-      <div class="column is-half">
-        <figure class="image">
-          <img src="./static/images/paper/pages/page-6.png" alt="Qualitative and user-study visualizations (Fig.5, Fig.8, Fig.9)">
-        </figure>
-      </div>
-    </div>
 
     <div class="columns is-centered">
-      <div class="column is-full-width">
+      <div class="column is-half">
         <figure class="image">
-          <img src="./static/images/paper/pages/page-7.png" alt="Lip distance curve and perceptual table (Fig.10, table 3)">
+          <img src="./static/images/Cross-Modal.png" alt="Cross-Modal generation of lip-synced 3D talking avatars with different expressions using prompt-guided identity">
+          <figcaption class="has-text-centered">Cross-Modal generation of lip-synced 3D talking avatars with different expressions using prompt-guided identity</figcaption>
         </figure>
       </div>
+    </div> 
+
+  
+  <div class="columns is-centered is-vcentered">
+    <div class="column is-half">
+      <figure class="image equal-height-figure">
+        <img src="./static/images/tsne.png" alt="The t-SNE diagram of the same sentence under different emotion types">
+        <figcaption class="has-text-centered">The t-SNE diagram of the same sentence under different emotion types</figcaption>
+      </figure>
     </div>
-  </div> -->
+
+    <div class="column is-half">
+      <figure class="image equal-height-figure">
+        <img src="./static/images/lip_distance.png" alt="Visualization of lip distance in conversation sequences of different models">
+        <figcaption class="has-text-centered">Visualization of lip distance in conversation sequences of different models</figcaption>
+      </figure>
+    </div>
+  </div>
+
+
+  <div class="columns is-centered">
+    <div class="column is-full">
+      <figure class="image" style="max-width: 550px; margin: 0 auto;">
+        <img src="./static/images/ablation.png" alt="Ablation experiment on the quality of emotion-identity fusion module" style="width: 100%; height: auto;">
+        <figcaption class="has-text-centered">Ablation experiment on the quality of emotion-identity fusion module</figcaption>
+      </figure>
+    </div>
+  </div>
+
+
+
+
 </section>
+
+
+
 
 <section class="section" id="bibtex">
   <div class="container is-max-desktop content">

@@ -1,8 +1,7 @@
-# Nerfies
+# Vocing Your Emotion
+This repository showcases the work presented in the IEEE VR 2024 paper *Voicing Your Emotion: Integrating Emotion and Identity in Cross-Modal 3D Facial Animations*.
 
-This is the repository that contains source code for the [Nerfies website](https://nerfies.github.io).
-
-If you find Nerfies useful for your work please cite:
+If you find Vocing Your Emotion useful for your work please cite:
 ```
 @inproceedings{song2024voicing,
       title={Voicing Your Emotion: Integrating Emotion and Identity in Cross-Modal 3D Facial Animations},
