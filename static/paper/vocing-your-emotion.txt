@@ -1,0 +1,652 @@
+                                                         Online Submission ID: 1472
+
+
+           Voicing Your Emotion: Integrating Emotion and Identity in
+                      Cross-Modal 3D Facial Animations
+                                                                Category: Research
+                                                        Paper Type: Algorithm/technique
+
+
+
+             Text
+          A fat man
+          A girl                                                     Emotion Labels
+          A man with           Text2Avatar                          😐😄😡😨😯😭
+          big mouth
+
+
+
+
+                                              Voicing Your Emotion
+              Speech                                                                                     😐        😄        😨        😡        😯
+
+      Fig. 1: Our method can combine text descriptions with audio features to generate accurate 3D facial animations rich in emotions. Firstly,
+      we generate the corresponding 3D facial template from the text based on our designed Text2Avatar, and then combine it with audio and
+      emotional labels to generate emotionally rich results.
+
+      Abstract— Recent advances in speech-driven 3D facial animation have yielded promising results, yet capturing intricate expressiveness,
+      particularly in emotion and identity, remains an intricate challenge. While conventional studies often prioritize lip synchronization,
+      they frequently overlook the full spectrum of emotional nuances and the uniqueness of individual identity. Addressing this deficiency,
+      we unveil a pioneering method tailored to produce 3D facial expressions that resonate deeply with emotion and identity, guided by
+      speech and user-provided prompt words. Our key insight is an emotion-identity fusion mechanism, a pre-trained self-reconstruction
+      codebook, meticulously crafted from a wide array of emotional facial movements, serving as an expressive motion benchmark. Using
+      this foundation, prompt words are seamlessly transformed into facial representations that capture both emotion and identity, and are
+      then adeptly projected onto 3D templates. When synergized with speech audio and a user-specified emotion, our algorithm breathes life
+      into a 3D avatar, reflecting the desired emotion and identity. The model’s efficacy is bolstered by an advanced autoregression technique,
+      marrying emotion and identity through an innovative feature fusion mechanism and a purpose-built loss function. Consequently, our
+      approach emerges as a robust tool for crafting 3D talking avatars, rich in emotional depth and distinctive identity.
+
+
+
+
+1   I NTRODUCTION
+The advancement of 3D facial animation sits at an intricate nexus where         ical innovation epitomized in the emotion and identity feature fusion
+technology grapples with the profound complexities of human emo-                module. This initiative is supported by an analytical rigor applied to
+tional and identitarian expressions. Scholarly undertakings, until now,         enriched datasets including VOCASET [11] and BIWI [18], and en-
+have focused on achieving remarkable strides in realizing photorealistic        hanced by the sophisticated EMOCA [12] method and the MEAD [42]
+animations and achieving precise lip-synchronization as underscored             dataset.
+in notable works [11, 17, 21, 22, 27, 28, 30–32, 41, 46]. However, a dis-           Our approach is not without its challenges. Emotions, with their in-
+cernible lacuna persists – the integration of emotional expressiveness          herent ephemerality and variability, require nuanced algorithms capable
+and distinct identity, elements that transform technical renderings into        of capturing and translating these transient states into discernible, realis-
+lifelike, expressive avatars.                                                   tic expressions. Identity, on the other hand, brings forth the challenge of
+    Our exploration is situated within this context, acknowledging the          representing the uniqueness of individual traits without compromising
+unprecedented challenges inherent in the fusion of emotion and identity.        the universal aspects that are shared across different individuals.
+The dynamic nature of emotions, characterized by their transient and                Despite these challenges, our fusion module stands as a testament
+multifaceted expressions, poses a significant challenge. Emotions are           to the intricate dance between rigorous technical innovation and the
+not static; they are fluid, evolving, and context-dependent, rendering          elusive, yet profound, aspects of human expressivity. We articulate
+their capture and representation a complex endeavor.                            a realm where 3D facial animations are not mere visual and auditory
+    Similarly, identity, imbued with both universal and individual char-        renderings but are imbued with emotional and identitarian nuances,
+acteristics, adds another layer of complexity. The uniqueness of indi-          making each piece a rich, multifaceted entity echoing the complexities
+vidual identity, shaped by an intricate tapestry of cultural, social, and       of human communication.
+personal nuances, demands a highly sophisticated approach to ensure                 Our method shows the advantages of achieving rich emotion and
+authenticity in representation within the animation.                            identity expression. The contributions of our work are as follows:
+    In our pursuit to address these complexities, we unveil a methodolog-          • Our endeavor to bridge the gap between textual prompts and 3D
+
+                                                                            1
+      physical states is encapsulated in the proposal of a cross-modality           The input of a trained FLAME model is a parameter vector, includ-
+      3D talking face generation method. We are transitioning from                  ing shape parameters, posture parameters, and expression parameters.
+      static, one-dimensional animations to dynamic, multifaceted rep-              These parameters control the identity features of the face, the rotation
+      resentations that breathe life into character faces with diverse              and translation of the head, and the expression changes of the face,
+      styles and expressions. This innovation transcends the conven-                respectively. The output of the model is a three-dimensional facial
+      tional boundaries, offering a customized, flexible, and adaptive              mesh, which has a set of vertices (nv=5023) and faces (nv=9976). This
+      solution that resonates with the complexity of real-world scenar-             3D facial grid can be used to represent different facial shapes and poses.
+      ios.                                                                          Due to its excellent plasticity and ability to convey rich facial features,
+                                                                                    our work drives the FLAME model to generate speaking faces.
+   • Rooted in the premise of integrative expressiveness, we introduce
+     an emotion and identity feature fusion module. This is not just                2.2   Adaptation to 3D from Rich 2D Audio-Visual Datasets
+     a technological advancement but a creative leap, ensuring that
+     each animation is a true reflection of specified speaker emotions.             The abundance and accessibility of 2D audio-visual datasets [1, 2, 9,
+     It has the adept capability to amalgamate diverse speech styles                35, 42, 49] have paved the way for significant advancements in the
+     of characters, creating a rich tapestry of expressions that are as             generation of 2D speaking faces [3, 5, 7, 8, 14, 15, 20, 23, 25, 38]. These
+     dynamic and varied as the human experience itself.                             datasets have been instrumental in achieving commendable results in
+                                                                                    this domain.
+   • A new loss function. An effective loss function method focuses                    Transition to 3D Speaking Faces and the Associated Challenges
+     on the overall face, which can increase the amplitude of changes               However, when transitioning into the sphere of 3D talking faces [11, 17,
+     in the speaker’s mouth with accurate mouth shape and make the                  21, 30–32, 46], the reliance on voluminous datasets becomes apparent.
+     overall face more dynamic.                                                     The deep learning methodologies in current paradigms predominantly
+                                                                                    employ supervised methods [11, 17, 21, 32, 37, 46], aiming to generate
+2 R ELATED W ORKS                                                                   speaking faces exhibiting high synchronization, particularly in the lip
+2.1 Speech-Driven 3D Facial Animation                                               movement.
+The progression in the field of 3D facial animation, especially in the con-            Noteworthy contributions have often utilized VOCASET, BIWI, and
+text of audio-visual mapping, has been marked by notable contributions,             Multiface [45] as their foundational training sets. However, a critical
+each addressing specific facets of this complex domain. MeshTalk [32]               evaluation reveals a marked limitation – these datasets exhibit a lack of
+is a commendable attempt at disentangling audio-correlated and un-                  diversity in emotional expressiveness and speaking styles.
+correlated facial information, employing a categorical latent space.                   VOCASET’s face mesh, registered with FLAME topology, emerges
+Nevertheless, it is constrained by the suboptimal expressiveness of its             as a pivotal tool. FLAME stands as a universal model adept at the
+chosen latent space, which manifests as unstable animation quality,                 intricate rendering of 3D faces. It operates through an input parameter
+particularly in settings where data is limited.                                     vector, encompassing shape, posture, and expression parameters, which
+   VOCA [10] marks another significant contribution, distinguished                  intricately dictate the identity, rotation and translation, and expressive
+by its utilization of advanced audio feature extraction models. It ex-              changes of the face respectively. The model’s output, a sophisticated
+cels in generating a diverse range of facial animations that correspond             three-dimensional facial mesh, is characterized by a set of vertices
+adeptly to a variety of speaking styles. In contrast, FaceFormer [17]               (nv=5023) and faces (nv=9976), capable of representing an array of
+leverages the Transformer architecture [40] to ensure temporal stability            facial shapes and poses.
+in animations by encompassing an extended audio context. However,                      In the context of these existing tools and recognized limitations, our
+both VOCA and FaceFormer are impeded by a shared challenge: they                    work adopts and extends the FLAME model to generate speaking faces.
+directly tackle the ill-posed nature of audio-visual mapping, charac-               We recognize FLAME’s exemplary malleability and its capability to
+terized by significant uncertainty and ambiguity. This direct approach              represent rich facial features. By leveraging this model, we aim to
+precipitates an over-smoothing problem, curtailing the vibrancy and                 transcend the identified gaps, offering an innovative pathway to more
+dynamism of the generated animations.                                               expressive and dynamically responsive 3D talking faces.
+   Building on these foundations, CodeTalker [46] enhances the frame-
+                                                                                    2.3   Identity Customization and Emotional Control
+work introduced by FaceFormer. It integrates a VQ-VAE [39] motion
+prior that has been separately trained. This innovation introduces                  There are few methods to provide users with options for identity cus-
+discrete motion primitives for facial motion representation in a rich con-          tomization and emotion control of generated 3D avatars. MeshTalk
+textual manner, demonstrating heightened efficacy in learning general               can generate multiple results for the same audio input, but there is no
+priors.                                                                             mechanism that allows for any control over emotions. FaceFormer and
+   However, a prevailing limitation across these studies remains the                CodeTalker control speech style by inserting training individuals’ style
+predominant focus on the precision of lip movements. The resultant an-              vectors, which cannot achieve simple emotional editing. EmoTalk [29]
+imations, while technically adept, often lack the controllable and vivid            is a method of animating emotional 3D faces through voice input, which
+expressions crucial for lifelike representations. There’s a discernible             requires training data planned by artists and cannot control emotional
+gap in the expressiveness of the animations, indicative of a broader                types. These methods all require driving fixed facial templates in the
+need for methods that amalgamate technical accuracy with the nuanced                dataset to generate speaking faces, and cannot generate any customized
+incorporation of complex, dynamic human expressions.                                speaking facial styles; Moreover, the expressive power of the faces gen-
+   Our research is situated within this context, addressing the expres-             erated by these methods is limited, with a single and rigid expression.
+siveness deficit and aiming to elevate the field from mere technical                In contrast, our method can generate faces of any specified style from
+accuracy to an enriched domain where animations are characterized by                semantics, and can control emotional types.
+their emotional and identitarian authenticity.
+   Due to the extensive and easily accessible 2D audio-visual dataset               2.4   Transformers and Stable Diffusion Networks
+[1, 2, 9, 19, 35, 42, 44, 49], 2D speaking faces [3, 5, 7, 8, 14, 15, 20, 23,       The advent of the attention mechanism is rooted in the nuanced study
+25, 38, 43, 44] have produced satisfactory results. In the field of 3D              of human vision and has evolved as a cornerstone in an array of ap-
+talking faces [6, 11, 17, 21, 26, 30–32, 36, 46], deep learning based               plications spanning natural language processing, statistical learning,
+methods largely rely on a large amount of data, utilizing supervised                image detection, and speech recognition, particularly with the expo-
+methods [11, 17, 21, 32, 37, 46, 48] to generate highly synchronized                nential progression of deep learning technologies. Fundamentally, the
+speaking faces with lips. Previous work often used VOCASET, BIWI                    attention mechanism is designed for the optimal allocation of informa-
+and Multiface [45] as training sets. These datasets are limited in rich-            tional processing resources. It mimics the human tendency to prioritize
+ness of emotion and speaking styles. VOCASET face mesh register                     focal points within a scene while relegating peripheral, less critical ele-
+with FLAME [24] topology. Flame is a universal model for 3D faces.                  ments to the background. Through assigning higher weights to pivotal
+
+                                                                                2
+                                                                 Online Submission ID: 1472
+
+
+                                    Text2Avatar Module (Sec 3.3)
+
+
+                                                                                                                                         L2 Loss
+          “ A young man ”           Stable
+                                   Diffusion
+                                                        Img2FLAME
+                                                                                                 Key Points Loss (Sec 3.6)
+
+
+                                                      Transformer                                Avatar Generator (Sec 3.5)
+        Speech                          TCN
+                                                        Encoder
+
+                                                Wav2Vec 2.0                             Style
+                                                                                       Decoder
+
+
+
+
+                                                                                                    Multi-Head
+                                                                                                    Attention
+                                  Emotion-Identity Fusion (Sec 3.4)
+                                                                                                                                 D
+        Emotion Condition                                                                                        Quantization
+                                                   Stylization
+
+
+
+
+                                                                    Embedding
+                                                     Block                              Motion
+                                      Self                                             Decoder
+                                    Attention
+        Identity Condition                                                                  Emotion-Identity Fusion (Sec 3.4)
+
+
+                                                                                           Auto-regression
+
+
+Fig. 2: The framework of our method. Input speech audio, specified facial expression types, and prompt words for customized facial templates, and
+then generate a 3D talking facial model.
+
+
+
+information and lower weights to less relevant data, the attention mech-            accurate lip movements, but the character’s exterior style is rigid and
+anism stands distinguished by its efficiency, speed, and performance,               cannot be customized. Therefore, we expect to obtain facial animations
+outpacing conventional CNNs and RNNs.                                               with customizable appearance styles. The specific pipeline of our net-
+   Transition to Transformer Architecture The transformative impact                 work is shown in Fig. 2. The entire network consists of four modules.
+of the Transformer model [40], initially unveiled in the domain of NLP,             Firstly, pre-trained Wav2Vec2.0 [4] model are used to encode audio to
+lies in its adept incorporation of the self-attention mechanism. This               obtain voice signals. Secondly, the Text2Avatar Module receives cus-
+model excels in encoding and representing input sequences, capturing                tomized prompts for the appearance of the speaker, thereby generating
+intricate dependency relationships amongst diverse sequence positions               the desired facial template. Thirdly, the Emotion-Identity Fusion Mod-
+to foster context-awareness. The Vision Transformer (ViT) [16], a                   ule embeds the specified expression into facial movements. Finally, the
+derivative adaptation for image classification, exemplifies the versatility         Avatar Generator uses the encoded signal from the previous module to
+and efficacy of Transformer models. ViTs have transcended their                     generate facial animation through an auto-regressive process, querying
+initial applications, permeating into various computer vision domains               facial motion priors within the constrained space of the codebook. The
+including object detection and semantic segmentation.                               entire goal can be described as follows:
+   In the context of 3D facial animations, Transformer models have
+demonstrated a prolific capacity to generate animations that are both                                               M̂ = F(A, Temp, E, I),                (1)
+realistic and expressive, derived from nuanced audio descriptions. Our              where A represents the driving audio, Temp represents the customized
+methodology is anchored in this architecture, integrating the Trans-                facial appearance prompt texts, E represents the conditioned emotions,
+former’s innovative design to enhance the expressive capacity of our                I represents the talking style, F is our method and M̂ is the predicted
+models.                                                                             facial motion. By leveraging these inputs, our method is capable of gen-
+   Integration of Stable Diffusion Stable diffusion, originating from               erating 3D talking faces with diverse styles in response to the provided
+Latent Diffusion Models (LDMs) [34], emerges as a potent text-to-                   audio.
+image generation model. With the computational backing of Stability
+AI and data support from LAION, a specialized LDM has been trained                  3.2 Preliminaries
+on a subset of LAION-5B, marking a significant stride in text and                   Facial motion is a complex phenomenon, as a single lip shape can
+image generation. The model, characterized by its iterative “denoising”             correspond to multiple facial expressions, and a single speech can be
+process in potential representation spaces and subsequent decoding into             accompanied by various potential facial expressions. It is advantageous
+comprehensive images, has made text and image generation accessible                 to map high-dimensional complex faces into low-dimensional spaces
+on consumer-grade GPUs.                                                             to simplify the mapping process and alleviate ambiguity (especially
+   In the scope of our research, stable diffusion serves as a pivotal               in one-to-many cases). Additionally, it is important to note that facial
+mechanism for generating customized facial templates derived from                   movements are interconnected and not independent. Consequently, our
+textual descriptions. This integration not only amplifies the diversity             approach involves training autoencoders to learn motion sequences as
+of generated faces but also underscores our commitment to harnessing                a preliminary step.
+cutting-edge technologies to enhance the realism and expressiveness of                 Avatar Facial Motion Primitives. Given the facial motion M1:T ,
+3D facial animations.                                                               the encoder maps it to a continuous latent, this process can be repre-
+                                                                                    sented as Ze = E(M1:T ). Then a vector quantization function Q(·) map
+3     M ETHOD                                                                       to a discrete latent representation Zq , this process can be formulated as
+3.1    Overview                                                                     follows:
+In order to obtain customizable character appearances and emotionally                                  Zq = Q(Ze ) = argminei ∥ze − ei ∥22 .               (2)
+rich facial speech motions, we propose a new method aimed at achiev-                Then, the self-reconstruction process can be expressed as follows:
+ing the conversion from speech to 3D facial motions under specified                                                
+speaker identities and emotions. Previous works are able to produce                                  M̂1:T = D Zq = D (Q (E (M1:T ))) ,                (3)
+
+                                                                                3
+where M̂1:T is the generated facial action, and D(·) is the motion                            3.4   Emotion-Identity Fusion Module
+decoder.                                                                                      The emotion identity fusion module achieves facial expression control
+   Facial Losses design. In order to better train the quantized au-                           and can learn character language style clues. In the module, in order
+toencoder, we have carefully designed the following loss functions to                         to better embed emotion and identity vectors into facial motions, Styl-
+achieve the best results:                                                                     ization Block [47] is applied after Linear Self attention [47], which
+                                                                                              brings timestamp t to the generation process. Specifically, two features
+                                        L = Lrec + β Lvq ,                          (4)       identity i and emotion e are fused with Linear Self-attention, outputs
+                                                                                              pass through Stylization Block and are added to the information. The
+                                     Lrec = ∥M1:T − M̂1:T ∥1 ,                      (5)       embedding block combines the past facial motions M1:t−1 and the style
+                                                                                              embedding via:
+               Lvq = ∥ sg(Ze ) − Zq ∥22 + ∥Ze − sg(Zq )∥22 ,                        (6)
+Our loss mainly consists of two parts, namely reconstruction loss and                                                                    i          e             e
+vq loss, and we have added a coefficient β to balance the two. The first                         F1:t−1
+                                                                                                  emb = Lθ (M̂1:t−1 ) + S(Attn(B ·           ,B·        ), B ·        ),    (8)
+term is a reconstruction loss. It involves calculating the mean absolute                                                              ||i||1     ||e||1        ||e||1
+error between the ground truth motions and the predicted motions for
+each frame mt in the sequence. The following two components are                               where F1:t−1
+                                                                                                       emb represents the encoded feature, L(·) is the projection
+intermediate losses used to update the codebook items. This is achieved                       layer, Attn(·) is the Linear Self-attention, S(·) is the Stylization Block,
+by minimizing the distance between the codebook vectors Zq and the                            B represents the adaptable fundamental vectors that form a linear span
+embedded features Ze . The stop-gradient operation sg(·) is employed                          across the emotion and identity domain.
+as a crucial mechanism to prevent collapsing.                                                    The advantage of Linear Self-attention is that feature map focus more
+                                                                                              on global information while classical self-attention focus more on pair-
+                                                                                              wise relation. The semantic clues provided by global information are
+                  T                                                                           beneficial for the coordination of facial motion synthesis. Embedding
+                                                         Reconstruct
+
+
+
+
+                                                                       Simplified
+
+
+
+
+                                                                                              style features through linear transformation, and obtaining timestamp
+                           Denoise
+
+
+
+
+                                                                                              embedding through positional embedding. The output of the attention
+               Diffusion
+
+
+
+
+                                                                                              mechanism is added to the information through the Stylization Block,
+                                                 EMCOA
+
+
+
+
+                                                                                              and the module incorporates timestamp t and rich expression semantics
+                                                                                              into the generation process.
+
+                                                                                              3.5   Avatar Generator
+                                                                                              We develop an Avatar Generator based on the attention mechanism
+             A man,                                                                           to generate talking avatars with different appearances, styles, and cor-
+            big beard.
+                                                                                              responding speech. Firstly, we employ a self-supervised pretrained
+                                                                                              speech model Wav2Vec 2.0 as a primary component to encode the
+Fig. 3: Display of reconstructed facial images. The input on the left is the                  speech. This model comprises an audio feature extractor and a multi-
+facial image generated by the stable diffusion, the output of the EMCOA                       layer transformer encoder. The audio feature extractor transforms raw
+model in the middle, and the simplified result based on the Flame model
+                                                                                              waveform speech into feature vectors using a temporal convolutional
+on the right.
+                                                                                              network (TCN). Subsequently, the transformer encoder contextualizes
+                                                                                              these feature vectors, resulting in contextualized speech features:
+3.3   Text2Avatar                                                                                                      F1:T
+                                                                                                                        s = W (TCN(A)),                                     (9)
+To create customized character appearances, we design a Text2Avatar
+Module. This module takes character prompts as input and generates                            where F1:T
+                                                                                                      s represents the audio features of the encoded frames 1 to T ,
+custom facial templates. These templates are then used by the Avatar                          and W represents the Transformer Encoder.
+Generator module to produce facial speech animations with different                              Next, we use two transformer decoders equipped with causal self-
+emotions. The input for this process consists of several text keywords,                       attention to learn the correlation between each frame in the context of
+and the output is a static human head model.                                                  the facial motion sequences. Specifically, the Style Decoder focuses
+   The workflow of the Text2Avatar module begins by inputting the                             on decoding style and emotional features, while the Motion Decoder
+prompt words. Firstly, we use a stable diffusion mode [33] to gen-                            focuses on facial motion details. The outputs of the two decoders are
+erate a facial image. This defines a Markov chain of diffusion steps,                         fused together with multi-head attention, aligning the audio and motion
+slowly adding random noise to the real data, called a forward process.                        modalities and preserving rich facial expressions. this process can be
+Then, we learn the reverse diffusion process, called a reverse process,                       formulated as follows:
+which constructs the image data we need from the noise using condi-
+tional terms. This image is fed into the facial reconstruction model
+EMOCA [13], producing the head template. From the reconstructed                                  Ẑ1:t = MultiAttn(Dm (Lθ (M̂1:t−1 ), F1:T       1:t−1 1:T
+                                                                                                                                       s ), Ds (Femb , Fs )),              (10)
+head template, we select 5023 vertices based on the Flame model to
+create a simplified model, resulting in the best performance of the                           where Ẑ1:t is the output features, Dm is the motion decoder, Ds is the
+generated facial model while preserving maximum detail. This process                          style ecoder.Ẑ1:t is further quantified into Z1:t via Eq. 2 and decoded
+can be formulated as follows:                                                                 by the first stage pre-trained VQ-VAE decoder D, ultimately generating
+                                                                                              M1:t .
+                 Temp = Simp(EMOCA(Di f f (C, ST ))),                               (7)
+                                                                                              3.6   Key Points Loss
+where C is the facial prompt word, ST is the number of steps sampled
+                                                                                              Our loss function comprises four distinct components: regression loss,
+by the diffusion model, Di f f represents the diffusion model, EMOCA
+                                                                                              motion loss and key points loss. The overall function is given by:
+is the facial reconstruction model, Simp represents the simplification
+of the facial template, and Temp is the final generated facial template.
+                                                                                                          Lsyn = λ1 ∗ Lreg + λ2 ∗ Lmotion + λ3 ∗ Lkey                      (11)
+    The specific implementation is shown in Fig. 3, the reconstructed
+model from the image effectively restores the details of the face, while                                                                  2
+the simplified model retains most of the original facial style.                                                    Lreg = Ẑ1:T − sg Z1:T
+                                                                                                                                      q       ,                            (12)
+                                                                                                                                                  2
+                                                                                          4
+                                                           Online Submission ID: 1472
+
+                                                    2                             Table 1: Quantitative evaluation on reconstructed dataset. Lower means
+                     Lmotion = M̂1:T − M1:T         2
+                                                      ,               (13)
+                                                                                  better fort both metrics.
+                                                2
+                       Lkey = M̂k1:T − Mk1:T        .                 (14)                                Method             LME ↓      AVE ↓
+                                                2
+                                                                                                          FaceFormer [17]    1.2071     1.2857
+The regularization loss Lreg acts as a guide for the model’s predictions                                  CodeTalker [46]    1.3039     1.2637
+                                                                                                          Ours               1.2070     1.2528
+Ẑ1:t , encouraging them to align more closely with the quantized val-
+ues Z1:t and promoting regularity in the predicted motion sequences.
+On the other hand, the motion loss Lmotion measures the disparity be-
+tween predicted motions and actual motions, thereby enhancing the                 Ablation experiments Table 2 shows the effect of our proposed key
+authenticity of facial expressions. Additionally, we introduce Lkey ,             active point loss on lip synchronization. We observed that the proposed
+which emphasizes the difference between predicted and actual values               method contributes to the accuracy of lip movement, and deletion can
+of "active key points". This approach injects dynamism into rigid facial          lead to an increase in erroneous indicators.
+expressions and improves lip accuracy. The operational principle is as
+follows: Firstly, random facial motion sequences with diverse expres-                      Table 2: Ablation evaluation on reconstructed dataset.
+sions are selected from the dataset, and then the variance of distance
+values for each facial registration vertex across all frames is calculated.                               Method            LME ↓       AVE ↓
+This variance, denoted as var = ∑Vj=1 N1 ∑N                   2   V
+                                              i=1 (di j − di ) ∈ R , high-                                w/o lossmouth     1.2931      1.3604
+lights significant changes in distance between different frames and the                                   w lossmouth       1.2070      1.2528
+natural expression state of the template object. Subsequently, the top k
+vertices with the highest variances are chosen to form the set of active
+key points, denoted as S = Topk (var) ∈ Rk . Finally, calculate the L2
+                                                                                                  angry     disgusted     fear     happy     neutral   sad
+error between the predicted and the ground truth of these k points. This
+approach allows for active movement of the facial muscles, enabling
+key parts of the face to better convey emotions.
+
+4     E XPERIMENTS
+4.1    Experimental Settings
+Datasets: We selected two people’s videos from the MEAD [42]
+dataset and reconstructed them into a 3D flame mesh as the training
+model dataset. Each subject has a total of 8 expressions, and we only
+select videos with level 3 expression intensity. Each expression has
+approximately 30 sentences. Our dataset has a total audio duration of
+approximately 0.58 hours, which is 0.48 for the VOCASET [11] dataset
+and 1.43 for the BIWI [18] dataset.
+   We utlize state-of-the-art face reconstruction methods EMOCA [12]               (a) w/o emotion-identity fusion module        (b) w/ emotion-identity fusion module
+to reconstruct high-detailed 3D facial expressions from single monoc-
+                                                                                  Fig. 4: The t-SNE diagram of the same sentence under different emotions
+ular images to FLAME [24] model. The 3D faces sequences are cap-
+                                                                                  types.
+tured at 25fps, each mesh is registered to the FLAME topology with
+5023 vertices and one subject has one template. The audio is con-
+verted to 16000Hz and is clipped into segments using a sliding window.               Fig. 4 shows the effectiveness of the emotion and identity fusion
+Wav2Vec2.0 [4] uses the model provided by the original paper to extract           module. We use t-SNE to visualize results of the same sentence under
+audio features.                                                                   different emotional styles of the same character. From the figure, it can
+Implementation Details: Motion prior is trained on the reconstructed              be seen that the expressions before using the module are difficult to
+dataset for 200 epochs with batch size 1. AdamW is used as optimizer,             distinguish. After using the module, different expressions are roughly
+with a learning rate of 1e-4. The size of the latent space is set empiri-         divided into different regions, and the expressions are more distinct.
+cally to 128 and q = 8. For training animation model, we train it with            This proves that our proposed method can achieve good visual effects.
+Adam optimizer with a learning rate of 1e-5 for 500 epochs.
+                                                                                  4.4   Qualitative Evaluation
+4.2    Evaluation Methods
+                                                                                  We plotted the changes in the distance between the upper and lower
+Lip Movement Error(LME): For a fair comparison in lip synchro-                    lips to visually display the lip movement results of different models in
+nization, we used the FLAME parameters to compare with other prior                the Fig. 10. As shown in Figure, in terms of lip changes, we observe
+works quantitatively. We select 254 vertices around the lips and calcu-           that CodeTalker is slightly better than FaceFormer, and our method has
+late the maximum L2 error from the ground truth as measurements of                a much larger change amplitude than FaceFormer. Overall, our method
+lip synchronization.                                                              has a greater degree than both. This indicates that our method generates
+Active Points Error(AVE): We also compared the errors of active key               more expressive facial animations while ensuring lip accuracy.
+points. Using the highest variance method introduced in the previous              Emotion control. Fig. 7 shows that our method can generate a
+section on the Flame model, select 1000 points and compare their                  specified facial template based on prompt words, and then generate 3D
+maximum L2 error, which can compare whether the facial expression                 speaking faces with different expressions. The prompt word in the first
+ability is active or rigid.                                                       line of the image is "a man", and the prompt word in the second image
+                                                                                  is "a girl".
+4.3    Quantitative Evaluation                                                    Lip synchronization. Fig. 5 shows the lip synchronization perfor-
+Comparison with SOTA methods We selected two individuals from                     mance by selecting frames corresponding to specific syllables in the
+the dataset after facial reconstruction that were different from the train-       synthesized facial animation. The results indicate that our model can
+ing set as the test subjects, and selected all 8 expressions with 5 sen-          generate lip movements that accurately express speech signals under
+tences for each expression. Table 1 shows that our method achieved the            different facial expressions. We also displayed the frames of key syl-
+best results compared to all other methods, indicating that our proposed          lables in the entire sentence, as shown in Fig. 6, which can obtain
+process can generate good lip shape while enhancing emotions.                     accurate mouth movements.
+
+                                                                              5
+                                                                                12                                                   14
+
+                                                                                10                                                   12
+
+                                                                                                                                     10
+                                                                                 8
+today                                                                                                                                    8
+                                                                                 6
+ /deɪ/                                                                                                                                   6
+                                                                                 4
+                                                                                                                                         4
+                                                                                 2                                                       2
+                                                                                 0                                                       0
+                                                                                      FaceFormer CodeTalker           Ours                   Significant       Small        No
+                                                                                            (1) Facial Dynamic                                       (2) Identity Difference
+ thank                                                                           100%                                                                30
+/θæŋk/                                                                            90%
+                                                                                                                                                     25
+                                                                                  80%
+                                                                                  70%                                                                20
+                                                                                  60%
+                                                                                  50%                                                        No      15
+                                                                                  40%                                                        Yes
+                                                                                  30%                                                                10
+
+ food                                                                             20%                                                                5
+/fud/                                                                             10%
+                                                                                   0%                                                                0
+                                                                                            Happy          Sad      Angry    Surprised                       w/ module   w/o module
+                                                                                             (3) Emotional Effects                                          (4) Module Effect
+
+         Neutral       Happy        Sad          Angry      Surprised          Fig. 8: We present different user research results from (1) to (4) in the
+                                                                               figure.
+Fig. 5: We compared the mouth movements of our method on different
+expressions on the same syllable. Show that our method can exhibit
+precise lip movements under different facial expressions.                      Ablation experiments. Fig. 9 shows the effect of the emotion-identity
+                                                                               fusion module. As shown in the red box, on the muscles of the eyes
+                                                                               and cheeks, those with modules can produce more obvious and intense
+                                                                               movements than those without them, which is more expressive and can
+                                                                               convey more emotional clues.
+I will sit down to share a Thanksgiving filled with family and friends.
+
+
+                                                                                     Ours
+
+
+
+
+                                                                               w/o emotion-
+                                                                               identity module
+
+
+
+                                                                                                 Neutral    Happy      Sad       Angry        Fear        Disgusted Contempt Suprised
+
+Fig. 6: Visualization of facial movements for different statements. The        Fig. 9: Ablation experiment on the quality of emotion-identity fusion
+image sequence corresponds to the red syllable sequence in the text.           module.
+The output of our method has a good visual perception.
+
+                                                                               4.5 User Study
+                                                                               Humans can understand subtle facial movements, therefore, it is a re-
+                                                                               liable metric in speech driven facial animation tasks. We conducted a
+                                                                               user study to evaluate the facial dynamics of animated faces compared
+                                                                               to the SOTA methods FaceFormer and CodeTalker. In addition, to
+                                                                               verify the effectiveness of our proposed method, we conducted abla-
+                                                                               tion comparison experiments on lip synchronization and emotional
+                                                                               expression realism.
+                                                                                  We published a questionnaire online for evaluation and ultimately
+                                                                               received a total of 22 results. The leading age group of recruiters is
+                                                                               between 20 and 30 (21 individuals), with the remaining age groups
+                                                                               distributed between 30 and 50. Regarding occupational distribution,
+                                                                               21 are college students, and 1 is a teacher, We design a total of 6
+                                                                               comparisons, each comprising 5 samples that compare our method with
+                                                                               other methods. Participants are asked to choose the best-performing
+                                                                               one from several videos, and the final result is the proportion of our
+                                                                               method to the total.
+Fig. 7: Cross modal generation of talking faces with different emotions.          The quantitative indicators of all studies are presented in Table 3. In
+                                                                               order to compare the differences between different methods, we have
+                                                                               also drawn bar charts and scale charts to demonstrate the superiority
+
+                                                                           6
+                                                           Online Submission ID: 1472
+
+                                                                                  uses both speech and user-provided words to create 3D faces that not
+                                                                                  only talk but also express feelings and have their own identity. We used
+                                                                                  advanced techniques to make sure every animation tells a story, not just
+                                                                                  through words spoken but also through the emotions expressed and the
+                                                                                  uniqueness of the character. In simpler terms, our work is about giving
+                                                                                  life to 3D animations. We have moved beyond just lip movement and
+                                                                                  speech to create animations that feel real, have their own identity, and
+                                                                                  can express emotions, making each one special and relatable. This is a
+                                                                                  big step forward in the world of 3D facial animations. Our method still
+                                                                                  has limitations in generating the facial animation. The main limitation
+                                                                                  is that our avatar’s shape is limited by the FLAME template which
+                                                                                  lacks the geometry details. In our future work, we would extend the
+                                                                                  avatar’s quality in terms of geometry details and textures.
+
+
+                                                                                  R EFERENCES
+                                                                                   [1] T. Afouras, J. S. Chung, A. Senior, O. Vinyals, and A. Zisserman. Deep
+                                                                                       audio-visual speech recognition. IEEE transactions on pattern analysis
+                                                                                       and machine intelligence, 44(12):8717–8727, 2018. 2
+Fig. 10: Visualization of lip distance in conversation sequences of differ-        [2] T. Afouras, J. S. Chung, and A. Zisserman. Lrs3-ted: a large-scale dataset
+ent models.                                                                            for visual speech recognition. arXiv preprint arXiv:1809.00496, 2018. 2
+                                                                                   [3] H. Averbuch-Elor, D. Cohen-Or, J. Kopf, and M. F. Cohen. Bringing
+                                                                                       portraits to life. ACM transactions on graphics (TOG), 36(6):1–13, 2017.
+                                Facial                       Emotion                   2
+          Methods                          Sync quality
+                              dynamism                      expression             [4] A. Baevski, H. Zhou, A. Mohamed, and M. Auli. wav2vec 2.0: A Frame-
+                                                                                       work for Self-Supervised Learning of Speech Representations. arXiv
+    Ours vs. FaceFormer        84.6%             -               -
+                                                                                       e-prints, p. arXiv:2006.11477, June 2020. doi: 10.48550/arXiv.2006.
+    Ours vs. Codetalker        52.4%             -               -                     11477 3, 5
+     Ours vs. w/o Lkey         63.6%          52.2%              -                 [5] L. Chen, R. K. Maddox, Z. Duan, and C. Xu. Hierarchical cross-modal
+                                                                                       talking face generation with dynamic pixel-wise loss. In Proceedings of
+        Ours vs. w/o                                                                   the IEEE/CVF conference on computer vision and pattern recognition, pp.
+     e-i fusion module            -              -           58.7%                     7832–7841, 2019. 2
+                                                                                   [6] Y. Chen, J. Zhao, and W. Zhang. Expressive speech-driven facial animation
+Table 3: Perceptual study results on facial dynamics, lip synchronization,             with controllable emotions. CoRR, abs/2301.02008, 2023. doi: 10.48550/
+and the effectiveness of our proposed method.                                          arXiv.2301.02008 2
+                                                                                   [7] K. Cheng, X. Cun, Y. Zhang, M. Xia, F. Yin, M. Zhu, X. Wang, J. Wang,
+                                                                                       and N. Wang. Videoretalking: Audio-based lip synchronization for talking
+                                                                                       head video editing in the wild. In SIGGRAPH Asia 2022 Conference
+of our method, and the results are shown in Fig. 8. From these results,                Papers, pp. 1–9, 2022. 2
+we can see that the subjects are more inclined to use our method. In               [8] Y. Choi, Y. Uh, J. Yoo, and J.-W. Ha. Stargan v2: Diverse image synthesis
+terms of facial dynamics, our method can achieve a significant ad-                     for multiple domains. In Proceedings of the IEEE/CVF conference on
+vantage of 84.6% compared to Faceformer, and 52.4% compared to                         computer vision and pattern recognition, pp. 8188–8197, 2020. 2
+CodeTalker. In order to verify the Lkey we proposed, we conducted ab-              [9] J. S. Chung, A. Nagrani, and A. Zisserman. Voxceleb2: Deep speaker
+lation experiments, and the results showed that we achieved 63.6% and                  recognition. arXiv preprint arXiv:1806.05622, 2018. 2
+52.2% advantages in facial dynamics and lip synchronization quality,              [10] D. Cudeiro, T. Bolkart, C. Laidlaw, A. Ranjan, and M. Black. Capture,
+respectively. In terms of facial expression, our method with the emotion-              learning, and synthesis of 3D speaking styles. Computer Vision and
+identity fusion module has a 58.7% advantage. We also demonstrate                      Pattern Recognition (CVPR), pp. 10101–10111, 2019. 2
+the ability of the model to specify speaker identity in Fig. 8 (2). We            [11] D. Cudeiro, T. Bolkart, C. Laidlaw, A. Ranjan, and M. J. Black. Capture,
+change the identity of different characters to speak the same paragraph                learning, and synthesis of 3d speaking styles. In Proceedings of the
+while ensuring other conditions are the same. 91.3% of the respondents                 IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp.
+believe that they can more or less distinguish the style of speech.                    10101–10111, 2019. 1, 2, 5
+                                                                                  [12] R. Danecek, M. J. Black, and T. Bolkart. EMOCA: Emotion driven
+5   L IMATIONS A ND F UTURE W ORK                                                      monocular face capture and animation. In Conference on Computer Vision
+                                                                                       and Pattern Recognition (CVPR), pp. 20311–20322, 2022. 1, 5
+Compared to traditional speech facial generation methods that focus               [13] R. Daněček, M. J. Black, and T. Bolkart. Emoca: Emotion driven monoc-
+too much on lip accuracy, although our method can customize identity                   ular face capture and animation. In Proceedings of the IEEE/CVF Con-
+features and generate controllable expressions, the expression styles                  ference on Computer Vision and Pattern Recognition, pp. 20311–20322,
+are not rich enough and the degree of controllability is still limited,                2022. 4
+and there is still a lack of facial realism. Our main goals for future            [14] S. d’Apolito, D. P. Paudel, Z. Huang, A. Romero, and L. Van Gool.
+research include further enriching the small details and expression                    Ganmut: Learning interpretable conditional space for gamut of emotions.
+styles of facial movements during speech, striving to achieve greater                  In Proceedings of the IEEE/CVF Conference on Computer Vision and
+controllability, making them more realistic and lifelike. In addition,                 Pattern Recognition, pp. 568–577, 2021. 2
+we will explore the potential of speaking faces and find new modes                [15] H. Ding, K. Sricharan, and R. Chellappa. Exprgan: Facial expression
+suitable for VR scenarios.                                                             editing with controllable expression intensity. In Proceedings of the AAAI
+                                                                                       conference on artificial intelligence, vol. 32, 2018. 2
+6   C ONCLUSION                                                                   [16] A. Dosovitskiy, L. Beyer, A. Kolesnikov, D. Weissenborn, X. Zhai, and
+                                                                                       T. Unterthiner. Transformers for image recognition at scale. arXiv preprint
+Our study focused on making 3D facial animations more lifelike by                      arXiv:2010.11929, 2020. 3
+adding real emotions and unique characteristics to each face. Until               [17] Y. Fan, Z. Lin, J. Saito, W. Wang, and T. Komura. Faceformer: Speech-
+now, a lot of focus has been on making the lips move realistically with                driven 3d facial animation with transformers. In Proceedings of the
+speech, but the animations lacked the warmth of emotions and the                       IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp.
+uniqueness of individual identities. We introduced a new method that                   18770–18780, 2022. 1, 2, 5
+
+                                                                              7
+[18] G. Fanelli, J. Gall, H. Romsdorfer, T. Weise, and L. V. Gool. A 3-d                    doi: 10.48550/ARXIV.2301.00023 2
+     audio-visual corpus of affective communication. IEEE Transactions on              [38] S. Tripathy, J. Kannala, and E. Rahtu. Facegan: Facial attribute control-
+     Multimedia, 12(6):591 – 598, October 2010. 1, 5                                        lable reenactment gan. In Proceedings of the IEEE/CVF winter conference
+[19] H. Fang, D. Weng, Z. Tian, and Z. Song. Audio to deep visual: Speaking                 on applications of computer vision, pp. 1329–1338, 2021. 2
+     mouth generation based on 3d sparse landmarks. In IEEE Conference                 [39] A. van den Oord, O. Vinyals, and k. kavukcuoglu. Neural discrete repre-
+     on Virtual Reality and 3D User Interfaces Abstracts and Workshops, VR                  sentation learning. In I. Guyon, U. V. Luxburg, S. Bengio, H. Wallach,
+     Workshops 2023, Shanghai, China, March 25-29, 2023, pp. 605–606.                       R. Fergus, S. Vishwanathan, and R. Garnett, eds., Advances in Neural
+     IEEE, 2023. doi: 10.1109/VRW58643.2023.00145 2                                         Information Processing Systems, vol. 30. Curran Associates, Inc., 2017. 2
+[20] X. Ji, H. Zhou, K. Wang, W. Wu, C. C. Loy, X. Cao, and F. Xu. Audio-              [40] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez,
+     driven emotional video portraits. In Proceedings of the IEEE/CVF confer-               Ł. Kaiser, and I. Polosukhin. Attention is all you need. Advances in neural
+     ence on computer vision and pattern recognition, pp. 14080–14089, 2021.                information processing systems, 30, 2017. 2, 3
+     2                                                                                 [41] M. Volonte, E. Ofek, K. Jakubzak, S. Bruner, and M. González-Franco.
+[21] T. Karras, T. Aila, S. Laine, A. Herva, and J. Lehtinen. Audio-driven                  Headbox: A facial blendshape animation toolkit for the microsoft rock-
+     facial animation by joint end-to-end learning of pose and emotion. ACM                 etbox library. In 2022 IEEE Conference on Virtual Reality and 3D User
+     Transactions on Graphics (TOG), 36(4):1–12, 2017. 1, 2                                 Interfaces Abstracts and Workshops, VR Workshops, Christchurch, New
+[22] R. Kato, Y. Kikuchi, V. Yem, and Y. Ikei. Cv-mora based lip sync facial                Zealand, March 12-16, 2022, pp. 39–42. IEEE, 2022. doi: 10.1109/
+     animations for japanese speech. In 2022 IEEE Conference on Virtual                     VRW55335.2022.00015 1
+     Reality and 3D User Interfaces Abstracts and Workshops, VR Workshops,             [42] K. Wang, Q. Wu, L. Song, Z. Yang, W. Wu, C. Qian, R. He, Y. Qiao,
+     Christchurch, New Zealand, March 12-16, 2022, pp. 558–559. IEEE, 2022.                 and C. C. Loy. MEAD: A large-scale audio-visual dataset for emotional
+     doi: 10.1109/VRW55335.2022.00130 1                                                     talking-face generation. pp. 700–717, 2020. 1, 2, 5
+[23] H. Kim, M. Elgharib, M. Zollhöfer, H.-P. Seidel, T. Beeler, C. Richardt,          [43] X. Wang, Y. Wang, W. Li, Z. Du, and D. Huang. Facial expression
+     and C. Theobalt. Neural style-preserving visual dubbing. ACM Transac-                  animation by landmark guided residual module. IEEE Trans. Affect.
+     tions on Graphics (TOG), 38(6):1–13, 2019. 2                                           Comput., 14(2):878–894, 2023. doi: 10.1109/TAFFC.2021.3100352 2
+[24] T. Li, T. Bolkart, M. J. Black, H. Li, and J. Romero. Learning a model            [44] R. Wu, Y. Yu, F. Zhan, J. Zhang, X. Zhang, and S. Lu. Audio-driven
+     of facial shape and expression from 4D scans. ACM Transactions on                      talking face generation with diverse yet realistic facial animations. Pattern
+     Graphics, (Proc. SIGGRAPH Asia), 36(6), 2017. 2, 5                                     Recognit., 144:109865, 2023. doi: 10.1016/j.patcog.2023.109865 2
+[25] A. Lindt, P. Barros, H. Siqueira, and S. Wermter. Facial expression               [45] C.-h. Wuu, N. Zheng, S. Ardisson, R. Bali, D. Belko, E. Brockmeyer,
+     editing with continuous emotion labels. In 2019 14th IEEE International                L. Evans, T. Godisart, H. Ha, X. Huang, et al. Multiface: A dataset for
+     Conference on Automatic Face & Gesture Recognition (FG 2019), pp. 1–8.                 neural face rendering. arXiv preprint arXiv:2207.11243, 2022. 2
+     IEEE, 2019. 2                                                                     [46] J. Xing, M. Xia, Y. Zhang, X. Cun, J. Wang, and T.-T. Wong. Codetalker:
+[26] B. Liu, X. Wei, B. Li, J. Cao, and Y. Lai. Pose-controllable 3d facial                 Speech-driven 3d facial animation with discrete motion prior. arXiv
+     animation synthesis using hierarchical audio-vertex attention. CoRR,                   preprint arXiv:2301.02379, 2023. 1, 2, 5
+     abs/2302.12532, 2023. doi: 10.48550/arXiv.2302.12532 2                            [47] M. Zhang, Z. Cai, L. Pan, F. Hong, X. Guo, L. Yang, and Z. Liu. Mo-
+[27] R. Nishimura, N. Sakata, K. Harada, T. Tominaga, K. Kiyokawa, and                      tiondiffuse: Text-driven human motion generation with diffusion model.
+     Y. Hijikata. Speech-driven facial animation by LSTM-RNN for communi-                   arXiv preprint arXiv:2208.15001, 2022. 4
+     cation use. In IEEE Conference on Virtual Reality and 3D User Interfaces,         [48] P. Zhou, Y. Bao, and Y. Qi. Learning detailed 3d face via CLIP model
+     VR 2019, Osaka, Japan, March 23-27, 2019, pp. 1102–1103. IEEE, 2019.                   from monocular image. In IEEE Conference on Virtual Reality and 3D
+     doi: 10.1109/VR.2019.8798145 1                                                         User Interfaces Abstracts and Workshops, VR Workshops 2023, Shanghai,
+[28] Y. Pan, R. Zhang, J. Wang, N. Chen, Y. Qiu, Y. Ding, and K. Mitchell.                  China, March 25-29, 2023, pp. 771–772. IEEE, 2023. doi: 10.1109/
+     Miencap: Performance-based facial animation with live mood dynamics.                   VRW58643.2023.00228 2
+     In 2022 IEEE Conference on Virtual Reality and 3D User Interfaces                 [49] H. Zhu, W. Wu, W. Zhu, L. Jiang, S. Tang, L. Zhang, Z. Liu, and C. C.
+     Abstracts and Workshops, VR Workshops, Christchurch, New Zealand,                      Loy. Celebv-hq: A large-scale video facial attributes dataset. In European
+     March 12-16, 2022, pp. 654–655. IEEE, 2022. doi: 10.1109/VRW55335.                     conference on computer vision, pp. 650–667. Springer, 2022. 2
+     2022.00178 1
+[29] Z. Peng, H. Wu, Z. Song, H. Xu, X. Zhu, J. He, H. Liu, and Z. Fan.
+     Emotalk: Speech-driven emotional disentanglement for 3d face animation.
+     2023. 2
+[30] H. Pham, S. Cheung, and V. Pavlovic. Speech-driven 3d facial animation
+     with implicit emotional awareness: A deep learning approach. In IEEE
+     Int’l Conf. Computer Vision and Pattern Recognition - Workshop on Deep
+     Affective Learning and Context Modeling, 2017. doi: 10.1109/cvprw.2017
+     .287 1, 2
+[31] H. X. Pham, Y. Wang, and V. Pavlovic. End-to-end learning for 3d facial an-
+     imation from raw waveforms of speech. arXiv preprint arXiv:1710.00920,
+     2017. 1, 2
+[32] A. Richard, M. Zollhöfer, Y. Wen, F. De la Torre, and Y. Sheikh. Meshtalk:
+     3d face animation from speech using cross-modality disentanglement. In
+     Proceedings of the IEEE/CVF International Conference on Computer
+     Vision, pp. 1173–1182, 2021. 1, 2
+[33] R. Rombach, A. Blattmann, D. Lorenz, P. Esser, and B. Ommer. High-
+     resolution image synthesis with latent diffusion models, 2021. 4
+[34] R. Rombach, A. Blattmann, D. Lorenz, P. Esser, and B. Ommer. High-
+     resolution image synthesis with latent diffusion models. In Proceedings of
+     the IEEE/CVF conference on computer vision and pattern recognition, pp.
+     10684–10695, 2022. 3
+[35] A. Rössler, D. Cozzolino, L. Verdoliva, C. Riess, J. Thies, and M. Nießner.
+     Faceforensics: A large-scale video dataset for forgery detection in human
+     faces. arXiv preprint arXiv:1803.09179, 2018. 2
+[36] B. Thambiraja, I. Habibie, S. Aliakbarian, D. Cosker, C. Theobalt, and
+     J. Thies. Imitator: Personalized speech-driven 3d facial animation. CoRR,
+     abs/2301.00023, 2023. doi: 10.48550/arXiv.2301.00023 2
+[37] B. Thambiraja, I. Habibie, S. Aliakbarian, D. Cosker, C. Theobalt, and
+     J. Thies. Imitator: Personalized speech-driven 3d facial animation, 2023.
+
+                                                                                   8
+
