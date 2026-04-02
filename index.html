@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="icon" href="./static/images/favicon.svg">
+  <link rel="icon" href="./static/images/IEEEVR_2024_Logo.svg">
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="./static/js/fontawesome.all.min.js"></script>
@@ -47,7 +47,7 @@
 </nav>
 
 <section class="hero" id="top">
-  <div class="hero-body" style="padding-top: 0rem;"> <!-- 将 padding-top 调小，默认通常是 3rem -->">
+  <div class="hero-body" style="padding-top: 0rem;"> <!-- 将 padding-top 调小，默认通常是 3rem -->
     <div class="container is-max-desktop">
       <!-- Added Logo and Conference Info -->
       <div class="columns is-centered">
@@ -167,12 +167,13 @@
 <section class="hero teaser">
   <div class="container is-max-desktop">
     <div class="hero-body">
-      <video id="teaser" autoplay muted loop playsinline height="100%">
-        <source src="./static/images/vocing-your-emotion-demo.mp4"
-                type="video/mp4">
+      <h2 class="title is-3 has-text-centered">Video</h2>
+      <video id="teaser" muted playsinline controls style="width: 100%; max-width: 780px; height: auto; display: block; margin: 0 auto;">
+        <source src="./static/videos/out.mp4" type="video/mp4">
+        Your browser does not support the video tag.
       </video>
       <h2 class="subtitle has-text-centered">
-        <span class="dnerf">Demo Videos</span>
+        <!-- <span class="dnerf">Demo Videos</span> -->
       </h2>
     </div>
   </div>
@@ -186,13 +187,14 @@
         <h2 class="title is-3">Method Overview</h2>
         <div class="content has-text-justified">
           <p>
-            Fig.2 shows the full pipeline: speech is encoded by Wav2Vec2.0, prompt text is converted to a personalized template via
+            The figure shows the pipeline: speech is encoded by Wav2Vec2.0, prompt text is converted to a personalized template via
             Stable Diffusion + Img2FLAME, emotion and identity are fused in temporal features, and the autoregressive generator predicts
             final 3D facial motion.
           </p>
         </div>
         <figure class="image" style="max-width: 720px; margin: 0 auto;">
           <img src="./static/images/method.png" alt="Method framework" style="width: 100%; height: auto;">
+          <figcaption class="has-text-centered">Framework of our method</figcaption>
         </figure>
       </div>
     </div>
@@ -202,10 +204,10 @@
         <h3 class="title is-4">Core Modules</h3>
         <div class="content">
           <ul>
-            <li><strong>Text2Avatar (Sec 3.3)</strong>: Generates a customizable face template from prompt words.</li>
-            <li><strong>Emotion-Identity Fusion (Sec 3.4)</strong>: Injects emotion and identity controls into sequential motion representation.</li>
-            <li><strong>Avatar Generator (Sec 3.5)</strong>: Uses quantized priors and autoregression to synthesize realistic motion sequences.</li>
-            <li><strong>Key Points Loss (Sec 3.6)</strong>: Strengthens dynamic movement in important facial regions for better expressiveness.</li>
+            <li><strong>Text2Avatar</strong>: Generates a customizable 3D face template from textual prompts via Stable Diffusion, EMOCA, and FLAME topology.</li>
+            <li><strong>Emotion-Identity Fusion</strong>: Integrates emotion and identity features into sequential facial motion representations using linear self-attention and stylization blocks.</li>
+            <li><strong>Avatar Generator</strong>: Extracts speech features with Wav2Vec 2.0, employs dual Transformer decoders, and leverages pre-trained VQ-VAE for quantized motion priors to autoregressively synthesize realistic and temporally coherent 3D facial animations.</li>
+            <li><strong>Key Points Loss</strong>: Applied during training to focus on highly active facial vertices, enhancing dynamic expression and improving lip synchronization accuracy.</li>
           </ul>
         </div>
       </div>
@@ -221,14 +223,14 @@
         <h2 class="title is-3">Core Experimental Results</h2>
         <div class="content has-text-justified">
           <p>
-            Quantitative metrics on reconstructed data: <strong>Ours (LME 1.2070 / AVE 1.2528)</strong>, compared with FaceFormer
-            (1.2071 / 1.2857) and CodeTalker (1.3039 / 1.2637). Ablation also shows clear gains from key-point supervision:
-            LME improves from 1.2931 to 1.2070 and AVE improves from 1.3604 to 1.2528.
+          The method proposed in this paper outperforms existing approaches in three aspects: <strong>lip-sync accuracy, emotional expressiveness, and identity customization</strong>. It effectively solves the problems of stiff expressions, uncontrollable identities, and insufficient dynamics in traditional 3D facial animation.
+         </p>
+          <p>
+            Quantitative metrics: Ours (LME 1.2070 / AVE 1.2528), compared with FaceFormer
+            (1.2071 / 1.2857) and CodeTalker (1.3039 / 1.2637).
           </p>
           <p>
             User study reports strong preference for our method: +84.6% and +52.4% on facial dynamism against FaceFormer and CodeTalker.
-            Against the model without Lkey, gains are +63.6% (dynamism) and +52.2% (lip-sync quality). Emotion-expression gain is +58.7%
-            versus the model without emotion-identity fusion.
           </p>
         </div>
       </div>
@@ -239,24 +241,24 @@
       <div class="column is-half">
         <figure class="image">
           <img src="./static/images/Cross-Modal.png" alt="Cross-Modal generation of lip-synced 3D talking avatars with different expressions using prompt-guided identity">
-          <figcaption class="has-text-centered">Cross-Modal generation of lip-synced 3D talking avatars with different expressions using prompt-guided identity</figcaption>
+          <figcaption class="has-text-centered">Cross-Modal generation of lip-synced 3D talking avatars with different expressions using prompt-guided identity. Demonstrate the capability to generate realistic avatars that accurately reflect specified identities and emotions.</figcaption>
         </figure>
       </div>
     </div> 
 
   
-  <div class="columns is-centered is-vcentered">
+  <div class="columns is-centered is-vcentered" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
     <div class="column is-half">
-      <figure class="image equal-height-figure">
-        <img src="./static/images/tsne.png" alt="The t-SNE diagram of the same sentence under different emotion types">
-        <figcaption class="has-text-centered">The t-SNE diagram of the same sentence under different emotion types</figcaption>
+      <figure class="image equal-height-figure" style="max-width: 520px; margin: 0 auto;">
+        <img src="./static/images/tsne.png" alt="The t-SNE diagram of the same sentence under different emotion types" style="width: 100%; height: auto; max-height: 280px; object-fit: contain;">
+        <figcaption class="has-text-centered">The t-SNE diagram of the same sentence under different emotion types. Demonstrate the Emotion-Identity Fusion module enables clear differentiation of facial features across different emotions, making expressions more distinguishable.</figcaption>
       </figure>
     </div>
 
     <div class="column is-half">
-      <figure class="image equal-height-figure">
-        <img src="./static/images/lip_distance.png" alt="Visualization of lip distance in conversation sequences of different models">
-        <figcaption class="has-text-centered">Visualization of lip distance in conversation sequences of different models</figcaption>
+      <figure class="image equal-height-figure" style="max-width: 520px; margin: 0 auto;"></figure>
+        <img src="./static/images/lip_distance.png" alt="Visualization of lip distance in conversation sequences of different models" style="width: 100%; height: auto; max-height: 280px; object-fit: contain;">
+        <figcaption class="has-text-centered">Visualization of lip distance in conversation sequences of different models. Proves larger and more natural lip movements while maintaining accurate lip synchronization, effectively avoiding over-smoothing.</figcaption>
       </figure>
     </div>
   </div>
@@ -266,7 +268,7 @@
     <div class="column is-full">
       <figure class="image" style="max-width: 550px; margin: 0 auto;">
         <img src="./static/images/ablation.png" alt="Ablation experiment on the quality of emotion-identity fusion module" style="width: 100%; height: auto;">
-        <figcaption class="has-text-centered">Ablation experiment on the quality of emotion-identity fusion module</figcaption>
+        <figcaption class="has-text-centered">Ablation experiment on the quality of emotion-identity fusion module. Ours enhance muscle movements in areas such as the periocular region and cheeks, resulting in richer emotional cues.</figcaption>
       </figure>
     </div>
   </div>
